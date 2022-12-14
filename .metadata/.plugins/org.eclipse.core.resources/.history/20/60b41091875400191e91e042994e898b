@@ -1,0 +1,162 @@
+package MultipleGUI;
+
+import java.awt.Color;
+import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.io.*;
+
+
+import javax.swing.*;
+
+
+public class Quiz extends JFrame implements ActionListener {
+	
+	JFrame quiz;
+	JPanel top;
+	JLabel outcome;
+	JLabel score;
+	JLabel question;
+	JButton[] answer = new JButton[4];
+	JButton next;
+	Question[] questions;
+	int currentq = 0;
+	int total = 0;
+	int totalquestions = 0;
+	
+	public Quiz() throws IOException {
+		quiz = new JFrame();
+		quiz.setLayout(new GridLayout(8,1));
+		
+		
+		top = new JPanel();
+		top.setVisible(true);
+		top.setLayout(new GridLayout(1,2));
+		
+		score = new JLabel();
+		score.setVisible(true);
+		score.setText(String.valueOf(0));
+		top.add(score);
+		
+		outcome = new JLabel();
+		outcome.setVisible(true);
+		top.add(outcome);
+		
+		quiz.add(top);
+		
+		readQuestions();
+		
+		question = new JLabel();
+		question.setVisible(true);
+		quiz.add(question);
+		
+		for(int i=0;i<answer.length;i++) {
+			answer[i] = new JButton();
+			answer[i].setVisible(true);
+			answer[i].setOpaque(true);
+			answer[i].addActionListener(this);
+			quiz.add(answer[i]);
+		}
+		
+		next = new JButton("NEXT");
+		next.setVisible(true);
+		next.setOpaque(true);
+		next.addActionListener(this);
+		next.setEnabled(false);
+		quiz.add(next);
+		displayNext();
+	}
+	
+	public void readQuestions() throws IOException {
+		Question[] questions = new Question[6];
+		String[] details = new String[6];
+		int questionno = 0;
+		BufferedReader in = new BufferedReader(new FileReader("src/Questions.txt"));
+		String line = in.readLine();
+		while (line != null) {
+			details[0] = line;
+			for (int i = 1; i < 6; i++) {
+				details[i] = in.readLine();
+				totalquestions++;
+			}
+			questions[questionno] = new Question(details);
+			questionno++;
+			line = in.readLine();
+		}
+		in.close();
+	}
+
+	public void displayNext() {
+		if (currentq <6) {
+			question.setText(questions[currentq].getQuestion());
+			for(int i=0;i<answer.length;i++) {
+				answer[i].setText(questions[currentq].answers[i]);
+			}
+			currentq++;
+			outcome.setText("");
+			next.setEnabled(false);
+			for(int i =0;i<4;i++) {
+				answer[i].setEnabled(true);
+				answer[i].setBackground(null);
+			}
+		}
+		
+	}
+	
+	public void isCorrect(String number) {
+		if (number.equals(questions[currentq-1].getCorrectanswer())) {			
+			total++;
+			score.setText(String.valueOf(total));
+			outcome.setTquiz.setVisible(true);ext("CORRECT");
+			int actualnumber =  Integer.parseInt(number)-1;
+			for(int i =0;i<4;i++) {
+				if(actualnumber == i) {
+					answer[i].setBackground(Color.GREEN);
+				}
+				else {
+					answer[i].setBackground(Color.RED);
+				}
+			}			
+		}
+		else {
+			outcome.setText("WRONG");
+		}
+		for(int i =0;i<4;i++) {
+			answer[i].setEnabled(false);
+		}
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource()==answer[0]) {
+			String number = "1";
+			isCorrect(number);
+			next.setEnabled(true);
+		}
+		if(e.getSource()==answer[1]) {
+			String number = "2";
+			isCorrect(number);
+			next.setEnabled(true);
+		}
+		if(e.getSource()==answer[2]) {
+			String number = "3";
+			isCorrect(number);
+			next.setEnabled(true);
+		}
+		if(e.getSource()==answer[3]) {
+			String number = "4";
+			isCorrect(number);
+			next.setEnabled(true);
+		}
+		if(e.getSource()==next) {
+			displayNext();
+		}
+	}
+	
+	public static void main(String args []) throws IOException {
+		Quiz q = new Quiz();
+		q.setSize(400,400);
+		q.setTitle("Quiz");
+		q.setVisible(true);
+	}
+	
+}

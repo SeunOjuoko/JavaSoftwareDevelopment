@@ -1,0 +1,36 @@
+package MultipleGUI;
+
+import java.awt.*;
+import java.awt.event.ActionListener;
+
+public class Quiz extends JFrame implements ActionListener {
+	
+	JFrame quiz;
+	JPanel top;
+	JLabel outcome;
+	JLabel score;
+	JLabel question;
+	JButton[] answer = new JButton[4];
+	JButton next;
+	Question[] questions;
+	int currentq = 0;
+	int total = 0;
+	int totalquestions = 0;
+	
+	public Quiz() {
+		quiz = new JFrame();
+		quiz.setLayout(new GridLayout(8,1));
+		
+		
+	}
+	
+	public void actionPerformed(ActionEvent e) {
+		
+	}
+	public static void main(String args []) throws IOException {
+		Quiz q = new Quiz();
+		q.setSize(400,400);
+		q.setTitle("Quiz");
+		q.setVisible(true);
+	}
+}
